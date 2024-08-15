@@ -1,73 +1,68 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Table of Contents
+1. [Environment Setup](#environment-setup)
+2. [Running the Server](#running-the-server)
+3. [API Endpoints](#api-endpoints)
+4. [Authentication](#authentication)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Environment Setup
 
-## Description
+Create a `.env.dev` file in the root directory of your project with the following variables:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+MONGODB_URI=mongodb://mongo:27017/your_database_name
+JWT_ACCESS_TOKEN_SECRET=your_access_token_secret
+JWT_ACCESS_TOKEN_EXPIRATION_MS=3600000
+JWT_REFRESH_TOKEN_SECRET=your_refresh_token_secret
+JWT_REFRESH_TOKEN_EXPIRATION_MS=604800000
+SELENIUM_GRID_URL=http://selenium:4444/wd/hub
+LINKEDIN_EMAIL=your_linkedin_email
+LINKEDIN_PASSWORD=your_linkedin_password
 
-## Installation
+## Running the Server
+To run the server using Docker Compose:
 
-```bash
-$ npm install
-```
+Ensure Docker and Docker Compose are installed on your system.
+Navigate to the project root directory in your terminal.
+Run the following command:
+docker-compose up --build
 
-## Running the app
+## API Endpoints
+Users
 
-```bash
-# development
-$ npm run start
+- POST /users: Create a new user
 
-# watch mode
-$ npm run start:dev
+Todo (Protected Routes)
 
-# production mode
-$ npm run start:prod
-```
+- POST /todo: Add a new todo
+- GET /todo: Get all todos for the current user
+- GET /todo/:id: Get a specific todo by ID
+- GET /todo/category/:cat: Get todos by category
+- PATCH /todo/:id: Update a todo
+- DELETE /todo/:id: Delete a todo
 
-## Test
+## Authentication
+The application uses JWT for authentication. Access and refresh tokens are stored in HTTP-only cookies.
+### Login
+When a user logs in successfully, the server will:
 
-```bash
-# unit tests
-$ npm run test
+- Generate an access token and a refresh token
+- Store the hashed refresh token in the user's database record
+- Set both tokens cookies in the response
 
-# e2e tests
-$ npm run test:e2e
+### Logout
+On logout, the server will:
 
-# test coverage
-$ npm run test:cov
-```
+- Clear the refresh token from the user's database record
+- Clear both the access token and refresh token from the client
 
-## Support
+### Token Verification
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Access tokens are verified using the JWT_ACCESS_TOKEN_SECRET
+- Refresh tokens are verified using the JWT_REFRESH_TOKEN_SECRET and compared against the hashed token stored in the user's database record
 
-## Stay in touch
+## Additional Notes
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+The project uses the NestJS framework
+MongoDB is used for data storage
+Selenium for web scraping tasks
