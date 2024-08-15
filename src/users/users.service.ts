@@ -26,10 +26,6 @@ export class UsersService {
     return user;
   }
 
-  async getusers() {
-    return this.userModel.find({});
-  }
-
   async updateUser(query: FilterQuery<User>, data: UpdateQuery<User>) {
     await this.userModel.findOneAndUpdate(query, data);
   }

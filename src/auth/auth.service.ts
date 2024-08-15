@@ -62,16 +62,25 @@ export class AuthService {
     );
 
     response.cookie('Authentication', accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: this.configService.get('NODE_ENV') === 'production',
       expires: expiresAccessToken,
     });
 
     response.cookie('Refresh', refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: this.configService.get('NODE_ENV') === 'production',
       expires: expiresRefreshToken,
     });
+  }
+
+  async logout(user: User, response: Response) {
+    await this.usersService.updateUser(
+      { _id: user._id },
+      { $set: { refreshToken: null } },
+    );
+    response.clearCookie('Authentication');
+    response.clearCookie('Refresh');
   }
 
   async verifyUser(email: string, password: string) {
